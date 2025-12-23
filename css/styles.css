@@ -79,11 +79,21 @@
   --bs-highlight-bg: #fff3cd;
 
   /*PALETA DE CORES DS*/
-  --ds-dark-blue-bg: rgba(0, 7, 44);
+  --ds-dark-blue-primary: rgba(0, 7, 44);
+  --ds-dark-blue-secondary: rgba(1, 27, 84);
+  --ds-light-blue: rgba(96, 129, 196);
 }
 
 .ds-dark-blue-bg {
-  background-color: var(--ds-dark-blue-bg);
+  background-color: var(--ds-dark-blue-primary) !important;
+}
+
+.ds-dark-blue-secondary-bg {
+  background-color: var(--ds-dark-blue-secondary) !important;
+}
+
+.ds-light-blue-bg {
+  background-color: var(--ds-light-blue) !important;
 }
 
 
@@ -99,6 +109,12 @@
   }
 }
 
+html, body {
+  overflow-x: hidden !important; /*se algo quebrar, esses sao os culpados*/
+  overflow-y: auto !important;
+}
+
+
 body {
   margin: 0;
   font-family: var(--bs-body-font-family);
@@ -110,6 +126,7 @@ body {
   background-color: var(--bs-body-bg);
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  overflow-y: auto !important;
 }
 
 hr {
@@ -3822,6 +3839,7 @@ textarea.form-control-lg {
   flex-basis: 100%;
   flex-grow: 1;
   align-items: center;
+  overflow: visible;
 }
 
 .navbar-toggler {
@@ -4157,7 +4175,7 @@ textarea.form-control-lg {
 }
 
 .navbar-dark-blue {
-  background-color: var(--ds-dark-blue-bg);
+  background-color: var(--ds-dark-blue-primary);
 }
 
 .card {
