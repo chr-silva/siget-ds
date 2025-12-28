@@ -4,12 +4,13 @@ document.addEventListener('DOMContentLoaded', function () {
   var calendar = new FullCalendar.Calendar(calendarEl, {
     locale: 'pt-br',
     initialView: 'dayGridMonth',
+    height: 'auto'
     // aqui dentro vão só as configurações do FullCalendar
   });
 
 
     //carrega o json de dias especiais
-    fetch("../js/events.json") //dar fetch SEMPRE no caminho correto relativo ao html
+    fetch("./js/events.json") //dar fetch SEMPRE no caminho correto relativo ao html
     .then(res => res.json())
     .then(eventos => calendar.addEventSource(eventos)).catch( err => {
         console.error("Erro:", err);
