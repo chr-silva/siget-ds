@@ -262,10 +262,10 @@ h3 {
   justify-content: center;
   line-height: 1;
   cursor: pointer;
-  border-right: 1px solid #cccccc;
+  /* border-right: 1px solid #cccccc; */
 }
-.c-header-icon i {
-  font-size: 18px;
+.c-header-icon i { /* ajustar tamanho dos icones da navbar */
+  font-size: 20px;
   line-height: 40px;
 }
 .c-header-icon--in-circle {
