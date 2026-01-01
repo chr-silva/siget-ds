@@ -1,9 +1,8 @@
+// alunoCache.js
 import { auth, db } from "./firebase.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-let alunoCache = null; // inicialmente vazio
-
+let alunoCache = null; // cache inicialmente vazio
 
 /**
  * Retorna os dados do aluno logado
@@ -12,42 +11,36 @@ let alunoCache = null; // inicialmente vazio
  * informações
  */
 
-export function getAlunoAtual() {
-    return new Promise((resolve, reject) => {
-        if (alunoCache) {
-            resolve(alunoCache);
-            return; 
-        }
+export async function getAlunoAtual(force = false) {
+  if (alunoCache && !force) {
+    return alunoCache;
+  }
 
-        const alunoStorage = sessionStorage.getItem("alunoCache");
-        if (alunoStorage) {
-            alunoCache = JSON.parse(alunoStorage);
-            resolve(alunoCache);
-            return;
-        }
+  const alunoStorage = sessionStorage.getItem("alunoCache");
+  if (alunoStorage && !force) {
+    alunoCache = JSON.parse(alunoStorage);
+    return alunoCache;
+  }
 
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                reject("Usuário não está logado!!");
-                return;
-            }
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("Usuário não está logado");
+  }
 
-            try {
-                const alunoRef  = doc(db, "alunos", user.uid);
-                const alunoSnap = await getDoc(alunoRef);
+  const alunoRef = doc(db, "alunos", user.uid);
+  const alunoSnap = await getDoc(alunoRef);
 
-                if (!alunoSnap.exists()) {
-                    reject("Aluno não encontrado no DB!!");
-                    return;
-                }
+  if (!alunoSnap.exists()) {
+    throw new Error("Aluno não encontrado no DB");
+  }
 
-                alunoCache = alunoSnap.data();
-                sessionStorage.setItem("alunoCache", JSON.stringify(alunoCache));
-                resolve(alunoCache);
+  alunoCache = alunoSnap.data();
+  sessionStorage.setItem("alunoCache", JSON.stringify(alunoCache));
 
-            } catch(err) {
-                reject(err);
-            }
-        });
-    });
+  return alunoCache;
+}
+
+export function limparCacheAluno() {
+  alunoCache = null;
+  sessionStorage.removeItem("alunoCache");
 }
