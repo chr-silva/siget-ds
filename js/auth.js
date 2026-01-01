@@ -1,20 +1,27 @@
 // auth.js
 import { auth, db } from "./firebase.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 
 // CADASTRO
 export async function cadastrarUsuario(email, senha, nome, turma) {
   const cred = await createUserWithEmailAndPassword(auth, email, senha); //credencial
+  await sendEmailVerification(cred.user);
+  alert("Enviamos um email para confirmar sua conta!");
+
   const user = cred.user;
 
   await setDoc(doc(db, "alunos", user.uid), {
     nome: nome,
+    email: email,
     //tipo: "representante",
     DtaCadastro: new Date(),
     turma: turma,
+    nascimento: "",
+    cidade: "", //inicializados de forma vazia para que o usuario decida depois
+    estado: "",
+    genero: "",
     ativo: true
   });
 }
