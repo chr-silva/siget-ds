@@ -1,4 +1,5 @@
 // cadastro.js
+import { sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import { cadastrarUsuario } from "./auth.js";
 
 document.getElementById("cadastroForm").addEventListener("submit", async (e) => {
