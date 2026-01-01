@@ -1,12 +1,12 @@
-
-"use strict";
+import { auth } from "../../../js/firebase.js";
+import { criarModalEmailNaoVerificado } from "./modals.js";
+import { esperarAuth, isEmailVerificado } from "../../../js/guard.js";
+import { sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
 const Dashboard = (() => {
 
   const global = {
-    tooltipOptions: {
-      placement: "right"
-    },
+    tooltipOptions: { placement: "right" },
     menuClass: ".c-menu"
   };
 
@@ -29,7 +29,7 @@ const Dashboard = (() => {
   function menuChangeActive(el) {
     document
       .querySelectorAll(`${global.menuClass} .is-active`)
-      .forEach(item => item.classList.remove("is-active"));
+      .forEach(i => i.classList.remove("is-active"));
 
     el.classList.add("is-active");
   }
@@ -42,28 +42,37 @@ const Dashboard = (() => {
     body.classList.toggle("sidebar-is-expanded");
     hamburger.classList.toggle("is-opened");
 
-    if (body.classList.contains("sidebar-is-expanded")) {
-      destroyTooltips();
-    } else {
-      initTooltips();
-    }
+    body.classList.contains("sidebar-is-expanded")
+      ? destroyTooltips()
+      : initTooltips();
   }
 
-  function init() {
-    // Hamburger click
+  async function init() {
+    // UI
     document
       .querySelector(".js-hamburger")
       ?.addEventListener("click", sidebarChangeWidth);
 
-    // Menu click
+    // menu click
     document
       .querySelectorAll(".js-menu li")
-      .forEach(item => {
-        item.addEventListener("click", () => menuChangeActive(item));
-      });
-
-    // Inicializa tooltips
+      .forEach(item =>
+        item.addEventListener("click", () => menuChangeActive(item))
+      );
+    
+    // inicializa tooltips
     initTooltips();
+
+    // 🔐 Auth + verificação de email
+    await esperarAuth();
+
+    if (!isEmailVerificado()) {
+      criarModalEmailNaoVerificado();
+
+      const modalEl = document.getElementById("modalEmailNaoVerificado");
+      const modal = new bootstrap.Modal(modalEl);
+      modal.show();
+    }
   }
 
   return { init };
@@ -72,3 +81,17 @@ const Dashboard = (() => {
 
 document.addEventListener("DOMContentLoaded", Dashboard.init);
 
+document.addEventListener("click", async (e) => {
+  if (e.target.id !== "reenviarEmailModal") return;
+
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
+    await sendEmailVerification(user);
+    alert("Email de confirmação reenviado!");
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao reenviar email.");
+  }
+});
