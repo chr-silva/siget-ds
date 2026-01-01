@@ -22,7 +22,7 @@ export function renderTabelaHorarios() {
 
     tabelaHorarios = new window.Tabulator(t1, {
         layout: "fitColumns",
-        height: "18rem",
+        height: "18rem", 
 
         data: [
             {
@@ -88,14 +88,14 @@ export function renderTabelaHorarios() {
         ],  
 
         columns: [
-            { title: "Horário", field: "horario", frozen: true },
+            { title: "Horário", field: "horario" },
             { title: "Domingo", field: "domingo" },
             { title: "Segunda", field: "segunda" },
             { title: "Terça", field: "terca" },
             { title: "Quarta", field: "quarta" },
             { title: "Quinta", field: "quinta" },
             { title: "Sexta", field: "sexta" },
-            { title: "Sábado", field: "sabado" },
+            { title: "Sábado", field: "sabado"  },
         ]
     });
 
